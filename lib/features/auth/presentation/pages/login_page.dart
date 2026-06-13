@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../common/widgets/app_text_field.dart';
 import '../../../../common/widgets/section_card.dart';
 import '../../data/auth_service.dart';
+import '../../../home/presentation/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -39,10 +40,11 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ログインしました')),
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+        (route) => false,
       );
-      Navigator.pop(context);
     } on AuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

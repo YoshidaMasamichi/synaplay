@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../common/widgets/section_card.dart';
 import '../../../../common/widgets/summary_line.dart';
+import '../../data/auth_service.dart';
 import '../../domain/player_card_draft.dart';
 import '../../domain/signup_draft.dart';
-import 'landing_page.dart';
+import '../../../home/presentation/pages/home_page.dart';
 
-class RegistrationCompletePage extends StatelessWidget {
+class RegistrationCompletePage extends StatefulWidget {
   final SignupDraft signupDraft;
   final PlayerCardDraft playerCardDraft;
 
@@ -15,6 +16,32 @@ class RegistrationCompletePage extends StatelessWidget {
     required this.signupDraft,
     required this.playerCardDraft,
   });
+
+  @override
+  State<RegistrationCompletePage> createState() =>
+      _RegistrationCompletePageState();
+}
+
+class _RegistrationCompletePageState extends State<RegistrationCompletePage> {
+  bool _isSaving = false;
+
+  Future<void> _goHome() async {
+    setState(() => _isSaving = true);
+    try {
+      await AuthService().savePlayerCard(widget.playerCardDraft);
+    } catch (_) {
+      // DB 保存失敗でもホームには進める
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +73,7 @@ class RegistrationCompletePage extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                '${signupDraft.displayName} さん、登録が完了しました。',
+                '${widget.signupDraft.displayName} さん、登録が完了しました。',
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
@@ -56,7 +83,7 @@ class RegistrationCompletePage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                '次はホームや募集一覧につながる本体画面を実装していきます。現段階では登録導線の骨格まで通っています。',
+                'プレイヤーカードを保存してホームへ進みます。',
                 style: TextStyle(
                   fontSize: 15,
                   color: AppColors.textSub,
@@ -69,7 +96,7 @@ class RegistrationCompletePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '保存予定データ（UI上の確認）',
+                      '登録内容',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -77,16 +104,23 @@ class RegistrationCompletePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    SummaryLine(label: '表示名', value: signupDraft.displayName),
-                    SummaryLine(label: 'メールアドレス', value: signupDraft.email),
-                    SummaryLine(label: '活動エリア', value: playerCardDraft.activityArea),
+                    SummaryLine(
+                        label: '表示名',
+                        value: widget.signupDraft.displayName),
+                    SummaryLine(
+                        label: 'メールアドレス',
+                        value: widget.signupDraft.email),
+                    SummaryLine(
+                        label: '活動エリア',
+                        value: widget.playerCardDraft.activityArea),
                     SummaryLine(
                       label: '守れるポジション',
-                      value: playerCardDraft.playablePositions.join(' / '),
+                      value:
+                          widget.playerCardDraft.playablePositions.join(' / '),
                     ),
                     SummaryLine(
                       label: '参加スタイル',
-                      value: playerCardDraft.participationStyle,
+                      value: widget.playerCardDraft.participationStyle,
                     ),
                   ],
                 ),
@@ -102,17 +136,18 @@ class RegistrationCompletePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LandingPage()),
-                      (route) => false,
-                    );
-                  },
-                  child: const Text(
-                    'トップへ戻る',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                  ),
+                  onPressed: _isSaving ? null : _goHome,
+                  child: _isSaving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text(
+                          'ホームへ進む',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w700),
+                        ),
                 ),
               ),
             ],
