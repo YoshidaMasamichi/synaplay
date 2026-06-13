@@ -3,6 +3,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../common/widgets/feature_row.dart';
 import '../../../../common/widgets/section_card.dart';
 import 'signup_page.dart';
+import 'login_page.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -118,8 +119,13 @@ class LandingPage extends StatelessWidget {
               const SizedBox(height: 12),
               Center(
                 child: TextButton(
-                  onPressed: () {},
-                  child: const Text('ログインは次段階で実装予定'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                    );
+                  },
+                  child: const Text('すでにアカウントをお持ちの方はこちら'),
                 ),
               ),
             ],
