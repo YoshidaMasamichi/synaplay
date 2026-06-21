@@ -1,17 +1,37 @@
-# synaplay
+# SynaPlay
 
-A new Flutter project.
+A Flutter application for SynaPlay — built with Supabase for authentication and backend services.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- [Flutter SDK](https://docs.flutter.dev/get-started/install)
+- A [Supabase](https://supabase.com) project with the URL and anon key configured
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Setup
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repository
+2. Copy your Supabase credentials into `lib/core/config/supabase_config.dart`
+3. Run `flutter pub get`
+4. Launch with `flutter run`
+
+## Project Structure
+
+```
+lib/
+├── app.dart                  # App entry point and MaterialApp setup
+├── main.dart                 # Supabase initialization and runApp
+├── common/widgets/           # Shared UI components
+├── core/
+│   ├── config/               # Environment configuration
+│   ├── supabase/             # Supabase client singleton
+│   └── theme/                # Colors and theme
+└── features/
+    └── auth/                 # Authentication feature (landing, signup, player card)
+```
+
+## Resources
+
+- [Flutter documentation](https://docs.flutter.dev/)
+- [Supabase Flutter SDK](https://supabase.com/docs/reference/dart/introduction)
