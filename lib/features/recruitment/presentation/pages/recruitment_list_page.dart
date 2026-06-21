@@ -6,6 +6,7 @@ import '../../../auth/presentation/pages/landing_page.dart';
 import '../../data/recruitment_service.dart';
 import '../../domain/recruitment.dart';
 import 'create_recruitment_page.dart';
+import 'recruitment_detail_page.dart';
 
 class RecruitmentListPage extends StatefulWidget {
   const RecruitmentListPage({super.key});
@@ -128,8 +129,17 @@ class _RecruitmentListPageState extends State<RecruitmentListPage> {
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final r = list[index];
-                        return _RecruitmentCard(
-                            recruitment: r, formatDate: _formatDate);
+                        return GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  RecruitmentDetailPage(recruitment: r),
+                            ),
+                          ),
+                          child: _RecruitmentCard(
+                              recruitment: r, formatDate: _formatDate),
+                        );
                       },
                     ),
                   );
