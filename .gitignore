@@ -33,6 +33,12 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Local unrelated workspaces/installers
+.claude/
+python_news_app/
+VOICEVOX-CPU.Web.Setup.*.exe
+voicevox-*.7z
+
 # Symbolication related
 app.*.symbols
 
