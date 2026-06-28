@@ -9,10 +9,7 @@ import 'registration_complete_page.dart';
 class PlayerCardSetupPage extends StatefulWidget {
   final SignupDraft signupDraft;
 
-  const PlayerCardSetupPage({
-    super.key,
-    required this.signupDraft,
-  });
+  const PlayerCardSetupPage({super.key, required this.signupDraft});
 
   @override
   State<PlayerCardSetupPage> createState() => _PlayerCardSetupPageState();
@@ -58,26 +55,11 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
     '11年以上',
   ];
 
-  final List<String> _positions = [
-    '投手',
-    '捕手',
-    '一塁',
-    '二塁',
-    '三塁',
-    '遊撃',
-    '外野',
-  ];
+  final List<String> _positions = ['投手', '捕手', '一塁', '二塁', '三塁', '遊撃', '外野'];
 
-  final List<String> _levelOptions = [
-    'ゆるく楽しみたい',
-    '経験者中心でも参加したい',
-    'しっかりプレーしたい',
-  ];
+  final List<String> _levelOptions = ['ゆるく楽しみたい', '経験者中心でも参加したい', 'しっかりプレーしたい'];
 
-  final List<String> _binaryOptions = [
-    'はい',
-    'いいえ',
-  ];
+  final List<String> _binaryOptions = ['はい', 'いいえ'];
 
   final List<String> _participationStyles = [
     '予定が合う時に参加したい',
@@ -115,9 +97,9 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_selectedPlayablePositions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('守れるポジションを1つ以上選択してください')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('守れるポジションを1つ以上選択してください')));
       return;
     }
 
@@ -191,28 +173,32 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
                         label: '活動エリア',
                         value: _selectedActivityArea,
                         items: _activityAreas,
-                        onChanged: (value) => setState(() => _selectedActivityArea = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedActivityArea = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: '年齢帯',
                         value: _selectedAgeRange,
                         items: _ageRanges,
-                        onChanged: (value) => setState(() => _selectedAgeRange = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedAgeRange = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: '利き手',
                         value: _selectedHandedness,
                         items: _handednessOptions,
-                        onChanged: (value) => setState(() => _selectedHandedness = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedHandedness = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: '経験年数',
                         value: _selectedExperience,
                         items: _experienceOptions,
-                        onChanged: (value) => setState(() => _selectedExperience = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedExperience = value),
                       ),
                     ],
                   ),
@@ -235,12 +221,17 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
                         spacing: 8,
                         runSpacing: 8,
                         children: _positions.map((position) {
-                          final selected = _selectedPlayablePositions.contains(position);
+                          final selected = _selectedPlayablePositions.contains(
+                            position,
+                          );
                           return FilterChip(
                             label: Text(position),
                             selected: selected,
-                            onSelected: (_) => _togglePlayablePosition(position),
-                            selectedColor: AppColors.primary.withOpacity(0.18),
+                            onSelected: (_) =>
+                                _togglePlayablePosition(position),
+                            selectedColor: AppColors.primary.withValues(
+                              alpha: 0.18,
+                            ),
                             checkmarkColor: AppColors.primaryDeep,
                             side: const BorderSide(color: AppColors.border),
                             labelStyle: TextStyle(
@@ -257,23 +248,26 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
                         label: '希望ポジション',
                         value: _selectedDesiredPosition,
                         items: _positions,
-                        onChanged: (value) => setState(() => _selectedDesiredPosition = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedDesiredPosition = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: '投手できますか',
                         value: _selectedPitcherAvailability,
                         items: _binaryOptions,
-                        onChanged: (value) =>
-                            setState(() => _selectedPitcherAvailability = value),
+                        onChanged: (value) => setState(
+                          () => _selectedPitcherAvailability = value,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: '捕手できますか',
                         value: _selectedCatcherAvailability,
                         items: _binaryOptions,
-                        onChanged: (value) =>
-                            setState(() => _selectedCatcherAvailability = value),
+                        onChanged: (value) => setState(
+                          () => _selectedCatcherAvailability = value,
+                        ),
                       ),
                     ],
                   ),
@@ -286,35 +280,40 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
                         label: 'レベル感',
                         value: _selectedLevel,
                         items: _levelOptions,
-                        onChanged: (value) => setState(() => _selectedLevel = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedLevel = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: 'ブランクはありますか',
                         value: _selectedBlankStatus,
                         items: _binaryOptions,
-                        onChanged: (value) => setState(() => _selectedBlankStatus = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedBlankStatus = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: 'グローブはありますか',
                         value: _selectedGloveStatus,
                         items: _binaryOptions,
-                        onChanged: (value) => setState(() => _selectedGloveStatus = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedGloveStatus = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: 'バットはありますか',
                         value: _selectedBatStatus,
                         items: _binaryOptions,
-                        onChanged: (value) => setState(() => _selectedBatStatus = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedBatStatus = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
                         label: 'スパイクはありますか',
                         value: _selectedSpikeStatus,
                         items: _binaryOptions,
-                        onChanged: (value) => setState(() => _selectedSpikeStatus = value),
+                        onChanged: (value) =>
+                            setState(() => _selectedSpikeStatus = value),
                       ),
                       const SizedBox(height: 16),
                       AppDropdownField<String>(
@@ -341,7 +340,10 @@ class _PlayerCardSetupPageState extends State<PlayerCardSetupPage> {
                     onPressed: _submit,
                     child: const Text(
                       '保存してはじめる',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),

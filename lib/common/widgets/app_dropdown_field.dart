@@ -18,7 +18,7 @@ class AppDropdownField<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
-      value: value,
+      initialValue: value,
       isExpanded: true,
       validator: (value) {
         if (value == null) return '$labelを選択してください';
@@ -45,10 +45,7 @@ class AppDropdownField<T> extends StatelessWidget {
           .map(
             (item) => DropdownMenuItem<T>(
               value: item,
-              child: Text(
-                item.toString(),
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: Text(item.toString(), overflow: TextOverflow.ellipsis),
             ),
           )
           .toList(),

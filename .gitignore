@@ -35,6 +35,7 @@ migrate_working_dir/
 
 # Local unrelated workspaces/installers
 .claude/
+.codex/
 python_news_app/
 VOICEVOX-CPU.Web.Setup.*.exe
 voicevox-*.7z

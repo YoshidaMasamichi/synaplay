@@ -62,7 +62,7 @@ class _RegistrationCompletePageState extends State<RegistrationCompletePage> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.18),
+                  color: AppColors.accent.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: const Icon(
@@ -105,18 +105,22 @@ class _RegistrationCompletePageState extends State<RegistrationCompletePage> {
                     ),
                     const SizedBox(height: 12),
                     SummaryLine(
-                        label: '表示名',
-                        value: widget.signupDraft.displayName),
+                      label: '表示名',
+                      value: widget.signupDraft.displayName,
+                    ),
                     SummaryLine(
-                        label: 'メールアドレス',
-                        value: widget.signupDraft.email),
+                      label: 'メールアドレス',
+                      value: widget.signupDraft.email,
+                    ),
                     SummaryLine(
-                        label: '活動エリア',
-                        value: widget.playerCardDraft.activityArea),
+                      label: '活動エリア',
+                      value: widget.playerCardDraft.activityArea,
+                    ),
                     SummaryLine(
                       label: '守れるポジション',
-                      value:
-                          widget.playerCardDraft.playablePositions.join(' / '),
+                      value: widget.playerCardDraft.playablePositions.join(
+                        ' / ',
+                      ),
                     ),
                     SummaryLine(
                       label: '参加スタイル',
@@ -146,7 +150,9 @@ class _RegistrationCompletePageState extends State<RegistrationCompletePage> {
                       : const Text(
                           'ホームへ進む',
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w700),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                 ),
               ),
