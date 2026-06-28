@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../common/widgets/app_text_field.dart';
 import '../../../../common/widgets/section_card.dart';
 import '../../data/auth_service.dart';
+import '../auth_error_message.dart';
 import '../../../home/presentation/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,15 +45,10 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(builder: (_) => const HomePage()),
         (route) => false,
       );
-    } on AuthException catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('ログインに失敗しました: $e')),
+        SnackBar(content: Text(authErrorMessage(e, action: 'ログイン'))),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -116,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: _obscurePassword,
                         suffix: IconButton(
                           onPressed: () {
-                            setState(() => _obscurePassword = !_obscurePassword);
+                            setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            );
                           },
                           icon: Icon(
                             _obscurePassword

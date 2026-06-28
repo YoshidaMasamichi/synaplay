@@ -3,8 +3,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../common/widgets/app_text_field.dart';
 import '../../../../common/widgets/section_card.dart';
 import '../../domain/signup_draft.dart';
+import '../auth_error_message.dart';
 import 'player_card_setup_page.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/auth_service.dart';
 
 class SignupPage extends StatefulWidget {
@@ -33,51 +33,46 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> _goNext() async {
-  if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  setState(() {
-    _isLoading = true;
-  });
+    setState(() {
+      _isLoading = true;
+    });
 
-  try {
-    final draft = SignupDraft(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-      displayName: _displayNameController.text.trim(),
-    );
+    try {
+      final draft = SignupDraft(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        displayName: _displayNameController.text.trim(),
+      );
 
-    await _authService.signUp(
-      email: draft.email,
-      password: draft.password,
-      displayName: draft.displayName,
-    );
+      await _authService.signUp(
+        email: draft.email,
+        password: draft.password,
+        displayName: draft.displayName,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PlayerCardSetupPage(signupDraft: draft),
-      ),
-    );
-  } on AuthException catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(e.message)),
-    );
-  } catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('登録に失敗しました: $e')),
-    );
-  } finally {
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PlayerCardSetupPage(signupDraft: draft),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(authErrorMessage(e, action: '登録'))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +181,10 @@ class _SignupPageState extends State<SignupPage> {
                           )
                         : const Text(
                             '登録する',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                   ),
                 ),
