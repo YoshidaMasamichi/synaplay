@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../common/widgets/app_text_field.dart';
 import '../../../../common/widgets/app_dropdown_field.dart';
@@ -27,15 +28,17 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
   bool _isLoading = false;
 
   final List<String> _areas = [
-    '東京都', '神奈川県', '埼玉県', '千葉県',
-    '大阪府', '兵庫県', '愛知県', '福岡県',
+    '東京都',
+    '神奈川県',
+    '埼玉県',
+    '千葉県',
+    '大阪府',
+    '兵庫県',
+    '愛知県',
+    '福岡県',
   ];
 
-  final List<String> _levels = [
-    'ゆるく楽しみたい',
-    '経験者中心でも参加したい',
-    'しっかりプレーしたい',
-  ];
+  final List<String> _levels = ['ゆるく楽しみたい', '経験者中心でも参加したい', 'しっかりプレーしたい'];
 
   @override
   void dispose() {
@@ -58,9 +61,18 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('開催日を選択してください')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('開催日を選択してください')));
+      return;
+    }
+
+    final area = _selectedArea;
+    final level = _selectedLevel;
+    if (area == null || level == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('エリアとレベルを選択してください')));
       return;
     }
 
@@ -69,26 +81,34 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
       final user = supabase.auth.currentUser!;
       final name = user.userMetadata?['display_name'] as String? ?? '名無し';
 
-      await _service.create(Recruitment(
-        id: '',
-        userId: user.id,
-        title: _titleController.text.trim(),
-        date: _selectedDate!,
-        area: _selectedArea!,
-        level: _selectedLevel!,
-        maxPlayers: _maxPlayers,
-        description: _descriptionController.text.trim(),
-        createdByName: name,
-        createdAt: DateTime.now(),
-      ));
+      await _service.create(
+        Recruitment(
+          id: '',
+          userId: user.id,
+          title: _titleController.text.trim(),
+          date: _selectedDate!,
+          area: area,
+          level: level,
+          maxPlayers: _maxPlayers,
+          description: _descriptionController.text.trim(),
+          createdByName: name,
+          createdAt: DateTime.now(),
+        ),
+      );
 
       if (!mounted) return;
       Navigator.pop(context, true);
+    } on PostgrestException catch (e) {
+      if (!mounted) return;
+      final message = e.message.isNotEmpty ? e.message : e.details;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('投稿に失敗しました: $message')));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('投稿に失敗しました: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('投稿に失敗しました: $e')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -150,15 +170,20 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 14),
+                            horizontal: 14,
+                            vertical: 14,
+                          ),
                           decoration: BoxDecoration(
                             border: Border.all(color: AppColors.border),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.calendar_today_outlined,
-                                  size: 18, color: AppColors.textSub),
+                              const Icon(
+                                Icons.calendar_today_outlined,
+                                size: 18,
+                                color: AppColors.textSub,
+                              ),
                               const SizedBox(width: 10),
                               Text(
                                 _selectedDate == null
@@ -192,10 +217,13 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          const Text('定員',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textMain)),
+                          const Text(
+                            '定員',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textMain,
+                            ),
+                          ),
                           const Spacer(),
                           IconButton(
                             onPressed: _maxPlayers > 1
@@ -203,9 +231,13 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
                                 : null,
                             icon: const Icon(Icons.remove_circle_outline),
                           ),
-                          Text('$_maxPlayers 人',
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w700)),
+                          Text(
+                            '$_maxPlayers 人',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                           IconButton(
                             onPressed: _maxPlayers < 30
                                 ? () => setState(() => _maxPlayers++)
@@ -225,7 +257,8 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                     onPressed: _isLoading ? null : _submit,
                     child: _isLoading
@@ -234,9 +267,13 @@ class _CreateRecruitmentPageState extends State<CreateRecruitmentPage> {
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('募集を投稿する',
+                        : const Text(
+                            '募集を投稿する',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w700)),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                   ),
                 ),
               ],
